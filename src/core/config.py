@@ -32,8 +32,11 @@ def _parse_csv(value: str) -> List[str]:
 
 
 def get_settings() -> Settings:
-    database_path = Path(os.getenv("DATABASE_PATH", "data/internship_hunter.db"))
-    export_dir = Path(os.getenv("EXPORT_DIR", "data/exports"))
+    default_db = "/tmp/internship_hunter.db" if os.getenv("VERCEL") else "data/internship_hunter.db"
+    default_exports = "/tmp/exports" if os.getenv("VERCEL") else "data/exports"
+
+    database_path = Path(os.getenv("DATABASE_PATH", default_db))
+    export_dir = Path(os.getenv("EXPORT_DIR", default_exports))
 
     database_path.parent.mkdir(parents=True, exist_ok=True)
     export_dir.mkdir(parents=True, exist_ok=True)
