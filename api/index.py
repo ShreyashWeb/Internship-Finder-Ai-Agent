@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+import os
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -12,6 +13,8 @@ from src.matching.scorer import JobScorer
 from src.pipeline.planner import ApplicationPlanner
 
 app = FastAPI(title="Internship Finder AI Agent API", version="1.0.0")
+BUILD_SHA = os.getenv("VERCEL_GIT_COMMIT_SHA", "local")
+BUILD_ID = BUILD_SHA[:7]
 
 
 def _load_ranked(container: object) -> tuple[UserProfile | None, list]:
@@ -27,7 +30,7 @@ def _load_ranked(container: object) -> tuple[UserProfile | None, list]:
 
 @app.get("/", response_class=HTMLResponse)
 def root() -> str:
-        return """
+    return f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,6 +103,7 @@ def root() -> str:
         <div class="hero">
             <h1>Internship Finder AI Agent</h1>
             <div class="muted">Vercel UI: save profile, run discovery, rank matches, generate artifacts, and build a daily plan.</div>
+            <div class="muted" style="margin-top:6px; font-weight:700; color:#0b57d0;">UI Build: {BUILD_ID}</div>
         </div>
 
         <div class="card">
@@ -271,6 +275,14 @@ def root() -> str:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "healthy"}
+
+
+@app.get("/version")
+def version() -> dict[str, str]:
+    return {
+        "build_id": BUILD_ID,
+        "build_sha": BUILD_SHA,
+    }
 
 
 @app.get("/profile")
