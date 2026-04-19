@@ -28,7 +28,7 @@ A functional internship agent that:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 2. Configure environment:
@@ -78,3 +78,17 @@ streamlit run src/interfaces/web_app.py
 ```powershell
 pytest -q
 ```
+
+## Vercel Deploy Checklist
+
+1. Connect Git repo: `ShreyashWeb/Internship-Finder-Ai-Agent` on branch `main`.
+2. Ensure latest commit is deployed.
+3. Add environment variable in Vercel project settings:
+  - `OPENAI_API_KEY` (optional but recommended for best output quality).
+4. Redeploy and verify:
+  - `/version` endpoint returns current build id/sha.
+  - Root page shows `UI Build: <sha>` marker.
+
+Notes:
+- Runtime dependencies are intentionally minimal in `requirements.txt` for stable Vercel builds.
+- Local dev/test/UI dependencies are in `requirements-dev.txt`.
